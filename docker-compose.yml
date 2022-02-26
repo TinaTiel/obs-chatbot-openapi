@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  groups:
+    image: stoplight/prism
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./obs-chatbot-groups.yml:/api.yml
+    command: mock -h 0.0.0.0 -p 8001 -d /api.yml

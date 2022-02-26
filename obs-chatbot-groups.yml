@@ -1,13 +1,18 @@
 openapi: '3.0.2'
+
+x-json-schema-faker:
+  locale: en
+  min-items: 2
+  max-items: 10
+  resolve-json-path: true
+
 info:
   title: OBS Chatbot - Groups
   version: '1.0'
   description: In OBS Chatbot, groups can be used to customize which viewers are allowed to execute different commands.
 servers:
-  - url: http://localhost:8080
-    description: "Development"
   - url: http://localhost:8001
-    description: "Docker Compose"
+    description: "Development"
 
 paths:
   /groups:
@@ -55,6 +60,10 @@ components:
           format: uuid
         name:
           type: string
+          x-faker: random.word
+        description:
+          type: string
+          x-faker: random.lorem.sentence
     errors:
       type: object
       properties:
