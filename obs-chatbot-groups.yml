@@ -1,0 +1,16 @@
+openapi: '3.0.2'
+info:
+  title: OBS Chatbot - Groups
+  version: '1.0'
+  description: In OBS Chatbot, groups can be used to customize which viewers are allowed to execute different commands.
+servers:
+  - url: http://localhost:8080
+    description: "Development"
+  - url: http://localhost:8001
+    description: "Docker Compose"
+paths:
+  /groups:
+    get:
+      responses:
+        '200':
+          description: OK
