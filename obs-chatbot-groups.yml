@@ -8,9 +8,88 @@ servers:
     description: "Development"
   - url: http://localhost:8001
     description: "Docker Compose"
+
 paths:
   /groups:
     get:
+      summary: List available groups
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/groups'
+  /groups/{id}:
+    get:
+      summary: View a single group
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '404': 
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Create or update a group
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: "#/components/responses/Error"
+    delete:
+      summary: Delete a group. Does not delete users as a side-effect
+      responses: 
+        '204':
+          description: Delete successful
+
+components:
+  schemas:
+    groups:
+      type: array
+      items:
+        $ref: '#/components/schemas/group'
+    group:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+    errors:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        timestamp: 
+          type: string
+          format: date-time
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error'
+    error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        
+  responses:
+    'Success': 
+      description: Operation completed successfully, and returns a group
+      content:
+        application/json:
+          schema: 
+            $ref: '#/components/schemas/group'
+    'NoContent':
+      description: Operation completed successfully, with no content
+    'NotFound':
+      description: 'Group not found'
+    'Error':
+      description: Operation failed with 1 or more errors
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/errors"
