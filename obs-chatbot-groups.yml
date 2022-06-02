@@ -40,6 +40,12 @@ paths:
           $ref: '#/components/responses/Success'
         '400':
           $ref: "#/components/responses/Error"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/group'
     delete:
       summary: Delete a group. Does not delete users as a side-effect
       responses: 
