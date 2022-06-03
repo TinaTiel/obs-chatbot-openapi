@@ -1,0 +1,63 @@
+openapi: '3.0.2'
+
+x-json-schema-faker:
+  locale: en
+  min-items: 2
+  max-items: 10
+  resolve-json-path: true
+
+info:
+  title: OBS Chatbot - OBS
+  version: '1.0'
+  description: Provides access to OBS-related information
+servers:
+  - url: http://localhost:8003
+    description: "Development"
+
+paths:
+  /obs/scenes:
+    get:
+      summary: List available scenes
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/scenes'
+  /obs/sources:
+    get:
+      summary: List available sources (in a scene)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/sources'
+
+components:
+  schemas:
+    scenes:
+      type: array
+      items:
+        $ref: '#/components/schemas/scene'
+    sources:
+      type: array
+      items:
+        $ref: '#/components/schemas/source'
+    scene:
+      type: object
+      properties:
+        name:
+          type: string
+          x-faker: random.word
+    source:
+      type: object
+      properties:
+        name:
+          type: string
+          x-faker: random.word
+        scene: 
+          type: string
+          x-faker: random.word

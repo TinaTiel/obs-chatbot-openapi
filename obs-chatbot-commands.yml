@@ -1,0 +1,217 @@
+openapi: '3.0.2'
+
+x-json-schema-faker:
+  locale: en
+  min-items: 2
+  max-items: 10
+  resolve-json-path: true
+
+info:
+  title: OBS Chatbot - Commands
+  version: '1.0'
+  description: In OBS Chatbot, commands define what possible actions can take place when invoked and who is allowed to invoke them.
+servers:
+  - url: http://localhost:8002
+    description: "Development"
+
+paths:
+  /commands:
+    get:
+      summary: List available commands
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/commands'
+  /commands/{id}:
+    get:
+      summary: View a single command
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '404': 
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Create or update a command
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: "#/components/responses/Error"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/command'
+    delete:
+      summary: Delete a command
+      responses: 
+        '204':
+          description: Delete successful
+
+components:
+  schemas:
+    commands:
+      type: array
+      items:
+        $ref: '#/components/schemas/command'
+    command:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        owner:
+          type: string
+          format: uuid
+        name:
+          type: string
+          x-faker: random.word
+        actionSequence:
+          oneOf:
+            - $ref: '#/components/schemas/inOrderActionSequence'
+            - $ref: '#/components/schemas/randomOrderActionSequence'
+          # discriminator:
+          #   propertyName: sequenceType
+          #   mapping:
+          #     inOrder: '#/components/schemas/inOrderActionSequence'
+          #     randomOrder: '#/components/schemas/randomOrderActionSequence'
+
+    actionSequence:
+      type: object
+      properties:
+        actions:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/sendMessageAction'
+              - $ref: '#/components/schemas/obsSourceVisibilityAction'
+              - $ref: '#/components/schemas/waitAction'
+              - $ref: '#/components/schemas/executeSequenceAction'
+    inOrderActionSequence:
+      allOf:
+        - $ref: '#/components/schemas/actionSequence'
+        - type: object
+          required:
+            - sequenceType
+          properties:
+            sequenceType:
+              type: string
+              enum:
+                - inOrder
+            reverse:
+              type: boolean
+    randomOrderActionSequence:
+      allOf:
+        - $ref: '#/components/schemas/actionSequence'
+        - type: object
+          required:
+            - sequenceType
+          properties:
+            sequenceType:
+              type: string
+              enum:
+                - randomOrder
+            pickQty:
+              type: integer
+              minimum: 0
+            maintainOrder:
+              type: boolean
+    sendMessageAction:
+      type: object
+      required:
+        - actionType
+      properties:
+        actionType:
+          type: string
+          enum:
+            - sendMessage
+        message:
+          type: string
+          x-faker: random.lorem.sentence
+    obsSourceVisibilityAction:
+      type: object
+      required:
+        - actionType
+      properties:
+        actionType:
+          type: string
+          enum:
+            - obsSourceVisibility
+        sceneName:
+          type: string
+          x-faker: random.word
+        sourceName:
+          type: string
+          x-faker: random.word
+        visible:
+          type: boolean
+    waitAction:
+      type: object
+      required:
+        - actionType
+      properties:
+        actionType:
+          type: string
+          enum:
+            - wait
+        waitDuration:
+          type: integer
+          minimum: 0
+        waitTimeout:
+          type: integer
+          minimum: 0
+    executeSequenceAction:
+      type: object
+      required:
+        - actionType
+      properties:
+        actionType:
+          type: string
+          enum:
+            - executeSequence
+        commandId:
+          type: string
+          format: uuid
+
+    errors:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        timestamp: 
+          type: string
+          format: date-time
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error'
+    error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        
+  responses:
+    'Success': 
+      description: Operation completed successfully, and returns a group
+      content:
+        application/json:
+          schema: 
+            $ref: '#/components/schemas/command'
+    'NoContent':
+      description: Operation completed successfully, with no content
+    'NotFound':
+      description: 'Group not found'
+    'Error':
+      description: Operation failed with 1 or more errors
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/errors"
