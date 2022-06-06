@@ -5,19 +5,19 @@ services:
     ports:
       - "8001:8001"
     volumes:
-      - ./obs-chatbot-groups.yml:/api.yml
-    command: mock -h 0.0.0.0 -p 8001 -d /api.yml
+      - ./groups.yml:/groups.yml
+    command: mock -h 0.0.0.0 -p 8001 -d /groups.yml
   commands:
     image: stoplight/prism
     ports:
       - "8002:8002"
     volumes:
-      - ./obs-chatbot-commands.yml:/api.yml
-    command: mock -h 0.0.0.0 -p 8002 -d /api.yml
+      - ./commands.yml:/commands.yml
+    command: mock -h 0.0.0.0 -p 8002 -d /commands.yml
   obs:
     image: stoplight/prism
     ports:
       - "8003:8003"
     volumes:
-      - ./obs-chatbot-obs.yml:/api.yml
-    command: mock -h 0.0.0.0 -p 8003 -d /api.yml
+      - ./obs.yml:/obs.yml
+    command: mock -h 0.0.0.0 -p 8003 -d /obs.yml
