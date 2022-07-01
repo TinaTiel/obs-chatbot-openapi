@@ -70,6 +70,9 @@ components:
         name:
           type: string
           x-faker: random.word
+        description:
+          type: string
+          x-faker: random.lorem.sentence
         permissions:
           $ref: '#/components/schemas/commandPermissions'
         actionSequence:
@@ -91,19 +94,26 @@ components:
             type: string
             format: uuid
         platforms:
+          $ref: '#/components/schemas/platformPermissions'
+    platformPermissions: 
+      type: object
+      properties:
+        youtube:
           type: array
-          items:
+          items: 
+            $ref: '#/components/schemas/platformPermission'
+        twitch:
+          type: array
+          items: 
             $ref: '#/components/schemas/platformPermission'
     platformPermission:
       type: object
       properties:
         permission:
           enum:
-            - TWITCH_ADMIN
-            - TWITCH_SUBSCRIBER
-            - TWITCH_FOLLOWER
-            - YOUTUBE_ADMIN
-            - YOUTUBE_SUBSCRIBER
+            - ADMIN
+            - SUBSCRIBER
+            - FOLLOWER
         minDuration:
           type: integer
           minimum: 0
