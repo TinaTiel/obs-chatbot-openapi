@@ -25,16 +25,6 @@ paths:
             application/json:
               schema: 
                 $ref: '#/components/schemas/scenes'
-  /obs/sources:
-    get:
-      summary: List available sources (in a scene)
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema: 
-                $ref: '#/components/schemas/sources'
 
 components:
   schemas:
@@ -42,22 +32,19 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/scene'
-    sources:
-      type: array
-      items:
-        $ref: '#/components/schemas/source'
     scene:
       type: object
       properties:
         name:
           type: string
           x-faker: random.word
+        sources: 
+          type: array
+          items:
+            $ref: '#/components/schemas/source'
     source:
       type: object
       properties:
         name:
-          type: string
-          x-faker: random.word
-        scene: 
           type: string
           x-faker: random.word
