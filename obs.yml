@@ -15,7 +15,7 @@ servers:
     description: "Development"
 
 paths:
-  /obs/scenes:
+  /scenes:
     get:
       summary: List available scenes
       responses:
